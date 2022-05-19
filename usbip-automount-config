@@ -1,0 +1,36 @@
+# List of devices to autoattach.
+# Each line is a substring of a device descriptor returned by usb-list
+# EXAMPLE:
+# $ usbip-list
+# BUSID  VID:PID    DEVICE                                                        STATE
+# 1-4    27c6:55a2  Goodix fingerprint                                            Not attached
+# 1-5    1234:0123  USB Mass Storage Device                                       Not attached
+# 1-6    13d3:5419  Integrated Camera, Integrated IR Camera, Camera DFU Device    Not attached
+# 1-14   0694:0002  Lego Mindstorms NXT                                           Not attached
+#
+# To autoattach all cameras, use:
+# export DEVICE_MATCH_SUBSTRINGS="
+# Camera
+# "
+# 
+# To autoattach whatever is on port 1-5, use:
+# export DEVICE_MATCH_SUBSTRINGS="
+# 1-5
+# "
+# 
+# To autoattach all Mindstorms NXT microcontrollers regardless of what port they are connected, use:
+# export DEVICE_MATCH_SUBSTRINGS="
+# 0694:0002
+# "
+# 
+export DEVICE_MATCH_SUBSTRINGS="
+My Example USB Device Name
+My Example USB Device Name 2
+"
+
+# Only change if usbip scripts were manually installed somewhere else
+export INSTALL_DIR=/usr/local/bin
+export PATH="$INSTALL_DIR:$PATH"
+
+# Rate to poll the host's USB devices (seconds)
+export POLL_INTERVAL=10

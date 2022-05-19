@@ -14,6 +14,7 @@ if '%errorlevel%' == '0' ( goto gotPrivileges ) else ( goto getPrivileges )
 
 :: Run a VB script to get Admin privileges from UAC, then relaunch this batch file
 :getPrivileges
+ECHO Requesting elevation...
 if '%1'=='ELEV' (echo ELEV & shift /1 & goto gotPrivileges)
 ECHO Set UAC = CreateObject^("Shell.Application"^) > "%vbsGetPrivileges%"
 ECHO args = "ELEV " >> "%vbsGetPrivileges%"
@@ -35,6 +36,6 @@ if '%1'=='ELEV' (
 ::::::::::::::::::::::::::::
 ::START
 ::::::::::::::::::::::::::::
+ECHO Attaching USB device on %2 to %1...
 usbipd wsl attach --distribution %1 --busid %2
 copy /y NUL COMPLETE >NUL
-
