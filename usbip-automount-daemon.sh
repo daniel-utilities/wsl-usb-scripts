@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+IFS=$'\n'
 DEVICE_MATCH_SUBSTRINGS=($DEVICE_MATCH_SUBSTRINGS)
 
 echo "Please edit /etc/defaults/usb-autoattach to specify device regex strings."
