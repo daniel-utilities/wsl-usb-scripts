@@ -22,7 +22,7 @@ while true; do
             # echo "Checking against \"$SUBSTRING\""
             if [[ "$DEVICE" == *"$SUBSTRING"* ]]; then
                 BUS_ID=$(echo "$DEVICE" | sed -e 's/^[[:space:]]*//' -e 's/\s.*$//')
-                echo "Attaching device on BUS_ID=$BUS_ID"
+                echo "Found device matching \"$SUBSTRING\" on BUS_ID=$BUS_ID."
                 usbip-attach "$BUS_ID" 
                 break 
             fi

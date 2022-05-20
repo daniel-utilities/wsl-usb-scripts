@@ -12,6 +12,7 @@ NAME="usbip-automount"
 DESC="$NAME"
 DAEMON="/bin/bash"
 BASH_COMMAND="/usr/sbin/$NAME >/dev/null 2>&1 < /dev/null &"
+PATH="/usr/local/bin:$PATH"
 
 do_start_cmd_override() {
   echo
@@ -22,15 +23,23 @@ do_start_cmd_override() {
 
 do_stop_cmd_override() {
     pkill -f "$NAME"
+
+    iterator=0
+    while [ $iterator -lt 5 ]; do
+        if ! status_cmd; then break; fi
+        sleep 1
+    done
 }
 
+# Returns 0 (success) if process is still running, 1 if stopped
 status_cmd() {
     COUNT="$(pgrep --count -f "$NAME")"
     [ 1 -eq "$(echo "${COUNT} > 1" | bc)" ]
 }
 
 do_restart_override() {
-    status_cmd && call do_stop || call do_start
+    status_cmd && call do_stop
+    status_cmd || call do_start
 }
 
 do_status_override() {

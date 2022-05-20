@@ -1,3 +1,6 @@
+# Rate to poll the host's USB devices (seconds)
+export POLL_INTERVAL=10
+
 # List of devices to autoattach.
 # Each line is a substring of a device descriptor returned by usb-list
 # EXAMPLE:
@@ -27,10 +30,3 @@ export DEVICE_MATCH_SUBSTRINGS="
 My Example USB Device Name
 My Example USB Device Name 2
 "
-
-# Only change if usbip scripts were manually installed somewhere else
-export INSTALL_DIR=/usr/local/bin
-export PATH="$INSTALL_DIR:$PATH"
-
-# Rate to poll the host's USB devices (seconds)
-export POLL_INTERVAL=10
