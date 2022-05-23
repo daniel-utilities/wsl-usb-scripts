@@ -39,7 +39,7 @@ fi
 
 # Set ./bashrc to autostart udev service
 echo "Adding '/etc/init.d/udev start' to ~/.bashrc..."
-APPEND="sudo /etc/init.d/udev start > /dev/null"
+APPEND="sudo /etc/init.d/udev start > /dev/null &"
 FILE="$HOME/.bashrc"
 grep -qxF "$APPEND" "$FILE" || echo "$APPEND" | tee -a "$FILE" > /dev/null
 source "$FILE"
@@ -53,7 +53,7 @@ fi
 
 # Set ./bashrc to autostart usbip-automount service
 echo "Adding 'service usbip-automount start' to ~/.bashrc..."
-APPEND="service usbip-automount start > /dev/null"
+APPEND="service usbip-automount start > /dev/null &"
 FILE="$HOME/.bashrc"
 grep -qxF "$APPEND" "$FILE" || echo "$APPEND" | tee -a "$FILE" > /dev/null
 
