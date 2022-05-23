@@ -19,10 +19,12 @@ sudo update-alternatives --install /usr/local/bin/usbip usbip /usr/lib/linux-too
 # Copy scripts to INSTALL_DIR
 cd "$SCRIPT_DIR"
 sudo chmod +x *.sh
+sudo chmod +x "usbip-automount-init"
 sudo cp -f "usbip-attach.sh"  "$INSTALL_DIR/usbip-attach"
 sudo cp -f "usbip-detach.sh"  "$INSTALL_DIR/usbip-detach"
 sudo cp -f "usbip-list.sh"    "$INSTALL_DIR/usbip-list"
 sudo cp -f "usbip-attach.bat" "$INSTALL_DIR/usbip-attach.bat"
+
 
 # Install usbip-automount as an init.d service
 service usbip-automount stop
