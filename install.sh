@@ -30,6 +30,20 @@ sudo cp -f "usbip-automount-daemon.sh" "/usr/sbin/usbip-automount"
 sudo cp -f "usbip-automount-init"      "/etc/init.d/usbip-automount"
 sudo cp -f "usbip-automount-config"    "/etc/default/usbip-automount"
 
+# Give user permissions to start UDEV service
+echo "Adding /etc/init.d/udev to /etc/sudoers..."
+APPEND="$USER ALL=(ALL) NOPASSWD: /etc/init.d/udev"
+if [ -z "$(sudo grep "$APPEND" /etc/sudoers )" ]; then
+    echo "$APPEND" | sudo EDITOR='tee -a' visudo
+fi
+
+# Set ./bashrc to autostart udev service
+echo "Adding /etc/init.d/udev start to ~/.bashrc..."
+APPEND="sudo /etc/init.d/udev start > /dev/null"
+FILE="$HOME/.bashrc"
+grep -qxF "$APPEND" "$FILE" || echo "$APPEND" | tee -a "$FILE" > /dev/null
+source "$FILE"
+
 # Give user permissions to start usbip-automount service
 echo "Adding /etc/init.d/usbip-automount to /etc/sudoers..."
 APPEND="$USER ALL=(ALL) NOPASSWD: /etc/init.d/usbip-automount"
@@ -37,11 +51,11 @@ if [ -z "$(sudo grep "$APPEND" /etc/sudoers )" ]; then
     echo "$APPEND" | sudo EDITOR='tee -a' visudo
 fi
 
-# Set ./bashrc to start usbip-automount service
-APPEND="service usbip-automount start > /dev/null"
+# Set ./bashrc to autostart usbip-automount service
+echo "Adding /etc/init.d/usbip-automount start to ~/.bashrc..."
+APPEND="sudo /etc/init.d/usbip-automount start > /dev/null"
 FILE="$HOME/.bashrc"
 grep -qxF "$APPEND" "$FILE" || echo "$APPEND" | tee -a "$FILE" > /dev/null
-source "$FILE"
 
 # done
 echo "
