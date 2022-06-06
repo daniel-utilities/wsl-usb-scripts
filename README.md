@@ -11,7 +11,7 @@ This software requires the following to be installed:
 ## Installation
 In a new Ubuntu terminal, run:
 ```
-git clone https://github.com/danielk-98/wsl-usb-scripts.git
+git clone https://github.com/daniel-scripts/wsl-usb-scripts.git
 chmod +x ./install.sh
 ./install.sh
 ```
