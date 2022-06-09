@@ -48,13 +48,13 @@ if [ -z "$(sudo grep "$APPEND" "$FILE" )" ]; then
 fi
 
 # Start udev service with ~/.profile
-APPEND="sudo /etc/init.d/udev start & disown"
+APPEND="(nohup sudo /etc/init.d/udev start </dev/null >/dev/null 2>&1 &)"
 FILE="$HOME/.profile"
 echo "Adding line: \"$APPEND\" to $FILE..."
 grep -qxF "$APPEND" "$FILE" || echo "$APPEND" | tee -a "$FILE" > /dev/null
 
 # Start usbip-automount service with ~/.profile
-APPEND="service usbip-automount start & disown"
+APPEND="(nohup service usbip-automount start </dev/null >/dev/null 2>&1 &)"
 FILE="$HOME/.profile"
 echo "Adding line: \"$APPEND\" to $FILE..."
 grep -qxF "$APPEND" "$FILE" || echo "$APPEND" | tee -a "$FILE" > /dev/null
