@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-IFS=$'\n'
-DEVICE_MATCH_SUBSTRINGS=($DEVICE_MATCH_SUBSTRINGS)
+split(){ DEVICE_MATCH_SUBSTRINGS=( $DEVICE_MATCH_SUBSTRINGS ); }
+IFS=$'\n' split
 
 echo "Please edit /etc/defaults/usb-autoattach to specify device regex strings."
 echo "Will autoattach USB devices containing the following strings:"
@@ -11,8 +11,8 @@ done
 
 while true; do
     # Poll host's USB devices; only consider those that are "Not attached"
-    IFS=$'\n'
-    UNATTACHED_DEVICES=($(usbip-list | grep -x -s ".*Not attached.*" | cat ))
+    split(){ UNATTACHED_DEVICES=($(usbip-list | grep -x -s ".*Not attached.*" | cat )); }
+    IFS=$'\n' split
 
     # For each unattached device, check if any of them contain a substring from the list
     for DEVICE in ${UNATTACHED_DEVICES[@]}; do

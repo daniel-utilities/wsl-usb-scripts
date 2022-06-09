@@ -2,8 +2,7 @@
 # Requires WSL2
 # ALSO need to install this on the Windows side: https://github.com/dorssel/usbipd-win/releases
 # https://devblogs.microsoft.com/commandline/connecting-usb-devices-to-wsl/
-CURRENT_DIR=$PWD
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 WSL=$(if grep -q microsoft /proc/version; then echo 'true'; else echo 'false'; fi)
 INSTALL_DIR="/usr/local/bin"
 
@@ -32,31 +31,32 @@ sudo cp -f "usbip-automount-daemon.sh" "/usr/sbin/usbip-automount"
 sudo cp -f "usbip-automount-init"      "/etc/init.d/usbip-automount"
 sudo cp -f "usbip-automount-config"    "/etc/default/usbip-automount"
 
-# Give user permissions to start UDEV service
-echo "Adding '/etc/init.d/udev' to /etc/sudoers..."
+# Give user permissions to start udev service
 APPEND="$USER ALL=(ALL) NOPASSWD: /etc/init.d/udev"
-if [ -z "$(sudo grep "$APPEND" /etc/sudoers )" ]; then
+FILE="/etc/sudoers"
+echo "Adding line: \"$APPEND\" to $FILE..."
+if [ -z "$(sudo grep "$APPEND" "$FILE" )" ]; then
     echo "$APPEND" | sudo EDITOR='tee -a' visudo
 fi
-
-# Set ./bashrc to autostart udev service
-echo "Adding '/etc/init.d/udev start' to ~/.bashrc..."
-APPEND="sudo /etc/init.d/udev start > /dev/null &"
-FILE="$HOME/.bashrc"
-grep -qxF "$APPEND" "$FILE" || echo "$APPEND" | tee -a "$FILE" > /dev/null
-source "$FILE"
 
 # Give user permissions to start usbip-automount service
-echo "Adding '/etc/init.d/usbip-automount' to /etc/sudoers..."
 APPEND="$USER ALL=(ALL) NOPASSWD: /etc/init.d/usbip-automount"
-if [ -z "$(sudo grep "$APPEND" /etc/sudoers )" ]; then
+FILE="/etc/sudoers"
+echo "Adding line: \"$APPEND\" to $FILE..."
+if [ -z "$(sudo grep "$APPEND" "$FILE" )" ]; then
     echo "$APPEND" | sudo EDITOR='tee -a' visudo
 fi
 
-# Set ./bashrc to autostart usbip-automount service
-echo "Adding 'service usbip-automount start' to ~/.bashrc..."
-APPEND="service usbip-automount start > /dev/null &"
-FILE="$HOME/.bashrc"
+# Start udev service with ~/.profile
+APPEND="sudo /etc/init.d/udev start & disown"
+FILE="$HOME/.profile"
+echo "Adding line: \"$APPEND\" to $FILE..."
+grep -qxF "$APPEND" "$FILE" || echo "$APPEND" | tee -a "$FILE" > /dev/null
+
+# Start usbip-automount service with ~/.profile
+APPEND="service usbip-automount start & disown"
+FILE="$HOME/.profile"
+echo "Adding line: \"$APPEND\" to $FILE..."
 grep -qxF "$APPEND" "$FILE" || echo "$APPEND" | tee -a "$FILE" > /dev/null
 
 # done
@@ -71,10 +71,6 @@ Make sure you have downloaded and installed the latest version of USB-IP on Wind
 
 Please edit the config file to choose what devices to auto-attach to WSL:
   sudo nano /etc/default/usbip-automount
-Then run:
-  service usbip-automount stop
-  service usbip-automount start
+
+Then, restart your machine. Both 'udev' and 'usbip-automount' services should start automatically.
 "
-
-
-cd "$CURRENT_DIR"

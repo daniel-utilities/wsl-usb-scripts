@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-CURRENT_DIR=$PWD
 
 if [[ $# != 0 ]]; then
     echo "USAGE:  usb-list"
@@ -14,5 +13,3 @@ CMD="cmd.exe"
 cd "$(wslpath 'C:\Windows\System32')"
 
 "$CMD" /c usbipd wsl list
-
-cd "$CURRENT_DIR"

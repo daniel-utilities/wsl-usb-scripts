@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-CURRENT_DIR=$PWD
-
 if [[ $# == 1 ]]; then
     BUSID=$1
 else
@@ -37,4 +35,3 @@ while [ ! -f "COMPLETE" ]; do sleep 1; done
 
 # Cleanup
 rm -rf "$WIN_TEMP"
-cd "$CURRENT_DIR"
