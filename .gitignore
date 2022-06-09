@@ -1,8 +1,4 @@
-# Exclude generated VS Code stuff
 .vscode
+*.code-workspace
 
-# Exclude logs
-*.log
-
-# Exclude downloaded dependencies
 get-docker.sh
