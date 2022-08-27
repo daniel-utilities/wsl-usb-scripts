@@ -13,7 +13,7 @@ fi
 
 # Install USB-IP drivers in WSL2
 sudo apt-get install -y linux-tools-virtual hwdata
-sudo update-alternatives --install /usr/local/bin/usbip usbip /usr/lib/linux-tools/*/usbip 20   
+sudo update-alternatives --install /usr/local/bin/usbip usbip `ls /usr/lib/linux-tools/*/usbip | tail -n1` 20   
 
 # Copy scripts to INSTALL_DIR
 cd "$SCRIPT_DIR"
