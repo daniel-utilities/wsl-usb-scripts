@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [[ $# != 0 ]]; then
-    echo "USAGE:  usb-list"
+    echo "USAGE:  usbip-list"
     exit
 fi
 

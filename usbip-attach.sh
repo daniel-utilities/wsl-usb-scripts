@@ -2,7 +2,7 @@
 if [[ $# == 1 ]]; then
     BUSID=$1
 else
-    echo "USAGE:  usb-attach BUSID"
+    echo "USAGE:  usbip-attach BUSID"
     exit
 fi
 

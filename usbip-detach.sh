@@ -3,7 +3,7 @@
 if [[ $# == 1 ]]; then
     BUSID=$1
 else
-    echo "USAGE:  usb-detach BUSID"
+    echo "USAGE:  usbip-detach BUSID"
     exit
 fi
 
