@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+
+# ********************************************
+#                USAGE
+# ********************************************
 if [[ $# == 1 ]]; then
     BUSID=$1
 else
@@ -6,32 +10,71 @@ else
     exit
 fi
 
-# Find where this script is located
-SOURCE=${BASH_SOURCE[0]}
-while [ -h "$SOURCE" ]; do
-  DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
-  SOURCE=$(readlink "$SOURCE")
-  [[ $SOURCE != /* ]] && SOURCE=$DIR/$SOURCE
-done
-INSTALL_DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
-
-
-# Copy the helper batch file to a temporary directory in Windows
-WIN_TEMP="$(wslpath 'C:\temp')"
-mkdir -p "$WIN_TEMP"
-cp -f "$INSTALL_DIR/usbip-attach.bat" "$WIN_TEMP/"
+# ********************************************
+#        CONFIGURATION VARIABLES
+# ********************************************
 
 # Determine the name of this WSL distro on the system
-WSL_DISTRO="$(IFS='\'; x=($(wslpath -w /)); echo "${x[${#x[@]}-1]}")"
+DISTRO="$(IFS='\'; x=($(wslpath -w /)); echo "${x[${#x[@]}-1]}")"
 
-# If cmd.exe not on PATH, go find it
-CMD="cmd.exe"
-[[ ! $(type -P "cmd.exe") ]] && CMD="$(wslpath 'C:\Windows\System32\cmd.exe')"
+# If powershell.exe not on PATH, go find it
+POWERSHELL="powershell.exe"
+[[ ! $(type -P "$POWERSHELL") ]] && POWERSHELL="$(wslpath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe')"
 
-# Run the helper batch file; wait until it produces a file called "COMPLETE"
-cd "$WIN_TEMP"
-"$CMD" /c usbip-attach.bat $WSL_DISTRO $BUSID
-while [ ! -f "COMPLETE" ]; do sleep 1; done
+# usbipd
+EXE="usbipd"
+ARGS="wsl attach -d $DISTRO -b $BUSID"
+HIDE_WINDOW=true
+ELEVATED=false
 
-# Cleanup
-rm -rf "$WIN_TEMP"
+
+# ********************************************
+#                FUNCTIONS
+# ********************************************
+
+# win_exec: start a Windows process in a new Powershell window, from within WSL.
+# Inputs:
+#   $POWERSHELL  - WSL path to powershell.exe (or cmd /c powershell.exe)
+#   $EXE         - Windows path to executable file
+#   $ARGS        - Arguments to pass to EXE
+#   $HIDE_WINDOW - (true/false). Powershell window will be hidden.
+#   $ELEVATED    - (true/false). EXE will be launched as Administrator.
+#                    UAC will be invoked if enabled on the system.
+# Outputs:
+#   $EXITCODE    - Numeric exit value of the process. 0 indicates success.
+#
+win_exec() {
+    local FIXEDARGS=${ARGS//\'/\'\'}
+    local PARAMS="\"$EXE\" -ArgumentList '$FIXEDARGS' -Wait -PassThru"
+    if [[ "$HIDE_WINDOW" == true ]]; then PARAMS="$PARAMS -WindowStyle Hidden"; fi
+    if [[ "$ELEVATED" == true ]]; then PARAMS="$PARAMS -Verb RunAs"; fi
+    local CMD="\$PROC=Start-Process $PARAMS; \$PROC.hasExited | Out-Null; \$PROC.GetType().GetField('exitCode', 'NonPublic, Instance').GetValue(\$PROC); exit"
+    EXITCODE=$("$POWERSHELL" -NoProfile -ExecutionPolicy Bypass -Command "$CMD" | tr -d '[:space:]')
+}
+
+
+# ********************************************
+#                BEGIN
+# ********************************************
+
+# Execute usbipd with default settings
+win_exec
+
+if [[ "$EXITCODE" == "3" ]]; then
+    echo "Device $BUSID has not yet been bound to USBIPD service, and requires Administrator privilege."
+    echo "Retrying with elevation..."
+    ELEVATED=true
+    win_exec
+fi    
+
+if [[ "$EXITCODE" == "0" ]]; then
+    echo "Success"
+elif [[ "$EXITCODE" == "1" ]]; then
+    echo "Device $BUSID is already attached."
+else
+    echo "USBIP returned error code $EXITCODE."
+    echo "From Windows, run the following command for more info:"
+    echo "$EXE $ARGS"
+fi
+
+exit $EXITCODE

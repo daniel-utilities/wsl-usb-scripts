@@ -16,7 +16,6 @@ while true; do
     # For each unattached device, check if any of them contain a substring from the list
     for DEVICE in "${UNATTACHED_DEVICES[@]}"; do
         # echo "Found unattached device: $DEVICE"
-
         for SUBSTRING in "${DEVICE_MATCH_SUBSTRINGS[@]}"; do
             # echo "Checking against \"$SUBSTRING\""
             if [[ "$DEVICE" == *"$SUBSTRING"* ]]; then
