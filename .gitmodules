@@ -1,0 +1,4 @@
+[submodule "bash-common-scripts"]
+	path = bash-common-scripts
+	url = https://github.com/daniel-utilities/bash-common-scripts.git
+	branch = main

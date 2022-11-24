@@ -23,7 +23,7 @@ POWERSHELL="powershell.exe"
 
 # usbipd
 EXE="usbipd"
-ARGS="wsl attach -d $DISTRO -b $BUSID"
+ARGS="wsl attach -d $DISTRO -b $BUSID -a"
 HIDE_WINDOW=true
 ELEVATED=false
 

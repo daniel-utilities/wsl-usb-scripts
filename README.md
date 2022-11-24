@@ -9,10 +9,14 @@ This software requires the following to be installed:
 - Administrator rights on Windows (required to mount USB devices using usbipd)
 
 ## Installation
-In a new Ubuntu terminal, run:
+In a new WSL2 terminal, clone this repo *with submodules*.
 ```
-git clone https://github.com/daniel-scripts/wsl-usb-scripts.git
-chmod +x ./install.sh
+git clone --recursive https://github.com/daniel-utilities/wsl-usb-scripts.git
+```
+Then run the installation script:
+```
+cd wsl-usb-scripts
+chmod +x install.sh
 ./install.sh
 ```
 This performs the following:
@@ -25,7 +29,7 @@ After installation, the following can be run at the Ubuntu terminal:
 - ``usbip-list``: Lists the USB devices on the Windows host
 - ``usbip-attach {BUS_ID}``: Attaches the device at the specified port (BUS_ID) to this WSL instance. Properly handles multiple WSL installations.
 - ``usbip-detach {BUS_ID}``: Detaches the device from WSL, returning it to the host.
-- ``service usbip-automount {start|stop|restart|status}``: Manages the usbip-automount service.
+- ``sudo service usbip-automount {start|stop|restart|status}``: Manages the usbip-automount service.
 
 ## Configuring usbip-automount
 The ``usbip-automount`` service reads the configuration file at /etc/default/usbip-automount. See file for details.
@@ -61,6 +65,6 @@ export DEVICE_MATCH_SUBSTRINGS="
 "
 ```
 
-After editing /etc/default/usbip-automount, run ``service usbip-automount restart`` to reload the configuration.
+After editing /etc/default/usbip-automount, run ``sudo service usbip-automount restart`` to reload the configuration.
 
 
