@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+# Exit gracefully when kill -15 is called
+cleanup ()
+{
+    kill -s SIGTERM $$
+    exit 0
+}
+
+trap cleanup SIGINT SIGTERM
+
+# Rate to poll the host's USB devices (seconds)
+POLL_INTERVAL=10
+
 # Reassign DEVICE_MATCH_SUBSTRINGS to an array of strings
 IFS=$'\n' declare -a 'DEVICE_MATCH_SUBSTRINGS=($DEVICE_MATCH_SUBSTRINGS)'
 
@@ -22,12 +34,11 @@ while true; do
                 # Parse the device's Bus ID from the string
                 BUS_ID=$(echo "$DEVICE" | sed -e 's/^[[:space:]]*//' -e 's/\s.*$//')
                 echo "Found device matching \"$SUBSTRING\" on BUS_ID=$BUS_ID."
-                usbip-attach "$BUS_ID" 
+                usbip-attach "$BUS_ID" & wait $!
                 break 
             fi
         done
     done
 
-    sleep $POLL_INTERVAL
-
+    sleep $POLL_INTERVAL & wait $!
 done

@@ -1,7 +1,4 @@
-# Rate to poll the host's USB devices (seconds)
-export POLL_INTERVAL=10
-
-# List of devices to autoattach.
+# USBIP-AUTOMOUNT-CONFIG
 # Each line is a substring of a device descriptor returned by usb-list
 # EXAMPLE:
 # $ usbip-list
@@ -11,22 +8,16 @@ export POLL_INTERVAL=10
 # 1-6    13d3:5419  Integrated Camera, Integrated IR Camera, Camera DFU Device    Not attached
 # 1-14   0694:0002  Lego Mindstorms NXT                                           Not attached
 #
-# To autoattach all cameras, use:
-# export DEVICE_MATCH_SUBSTRINGS="
+# To always autoattach all cameras, use:
 # Camera
-# "
 # 
-# To autoattach whatever is on port 1-5, use:
-# export DEVICE_MATCH_SUBSTRINGS="
+# To always autoattach whatever is on port 1-5, use:
 # 1-5
-# "
 # 
-# To autoattach all Mindstorms NXT microcontrollers regardless of what port they are connected, use:
-# export DEVICE_MATCH_SUBSTRINGS="
+# To always autoattach all Mindstorms NXT microcontrollers,
+# (regardless of what port they are connected) use:
 # 0694:0002
-# "
 # 
-export DEVICE_MATCH_SUBSTRINGS="
+# DEVICE MATCH:
 My Example USB Device Name
 My Example USB Device Name 2
-"
