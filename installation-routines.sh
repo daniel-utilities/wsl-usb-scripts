@@ -22,27 +22,28 @@ function install_prerequisites() {
 
 # Download and run convenience script
 function install_files() {
-    get_script_dir
-    local -a INSTALL_FILES=(
-        "$_SCRIPT_DIR/usbip-attach.sh           : /usr/local/bin/usbip-attach"
-        "$_SCRIPT_DIR/usbip-detach.sh           : /usr/local/bin/usbip-detach"
-        "$_SCRIPT_DIR/usbip-list.sh             : /usr/local/bin/usbip-list"
-        "$_SCRIPT_DIR/usbip-automount-daemon.sh : /usr/sbin/usbip-automount"
-        "$_SCRIPT_DIR/usbip-automount-init.sh   : /etc/init.d/usbip-automount"
+    local script_dir
+    get_script_dir script_dir
+    local -a install_files=(
+        "$script_dir/usbip-attach.sh           : /usr/local/bin/usbip-attach"
+        "$script_dir/usbip-detach.sh           : /usr/local/bin/usbip-detach"
+        "$script_dir/usbip-list.sh             : /usr/local/bin/usbip-list"
+        "$script_dir/usbip-automount-daemon.sh : /usr/sbin/usbip-automount"
+        "$script_dir/usbip-automount-init.sh   : /etc/init.d/usbip-automount"
     )
     # Don't overwrite previous config file
     if [ ! -e "/etc/default/usbip-automount" ]; then
-        INSTALL_FILES+=( "$_SCRIPT_DIR/usbip-automount-config : /etc/default/usbip-automount" )
+        install_files+=( "$script_dir/usbip-automount-config : /etc/default/usbip-automount" )
     fi
 
     echo ""
     echo "The following files will be installed:" 
-    print_arr INSTALL_FILES
+    print_arr install_files
     echo ""
     if ! confirmation_prompt; then return; fi;
     echo ""
 
-    multicopy INSTALL_FILES
+    multicopy install_files
 }
 
 # Set services to run automatically
